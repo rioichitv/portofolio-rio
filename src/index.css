@@ -1,13 +1,56 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  --mario-red: #e52222;
+  --mario-blue: #1a6ed8;
+  --mario-yellow: #f5c518;
+  --mario-green: #3cb043;
+  --mario-brown: #8b4513;
+  --mario-sky: #5c94fc;
+  --mario-dark: #1a1a2e;
+  --mario-pipe: #2d7a2d;
+  --mario-coin: #ffd700;
+  --mario-brick: #c84b11;
+  --pixel-shadow: 4px 4px 0px rgba(0,0,0,0.5);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Nunito', sans-serif;
+  background: var(--mario-sky);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* On mobile, allow the slide-content div to internally scroll.
+   The app-container still clips the horizontal world scroller. */
+@media (max-width: 768px) {
+  html, body {
+    overflow: hidden;
+    /* Must stay hidden to prevent page scroll, but touch events inside
+       .slide-content with overflow-y:auto + touch-action:pan-y will still work */
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--mario-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mario-red);
+  border-radius: 4px;
 }

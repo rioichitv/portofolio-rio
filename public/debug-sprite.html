@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sprite Debug</title>
+<style>
+body { background: #5c94fc; font-family: monospace; padding: 20px; }
+h2 { color: white; }
+.grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+.frame-box {
+  border: 2px solid yellow;
+  background: rgba(0,0,0,0.3);
+  text-align: center;
+  padding: 4px;
+}
+.frame-box p { color: white; font-size: 10px; margin: 4px 0 0; }
+.sprite {
+  width: 150px; height: 196px;
+  background-image: url('/karakter-transparent.png');
+  background-repeat: no-repeat;
+  background-size: 900px 588px;
+  image-rendering: pixelated;
+}
+</style>
+</head>
+<body>
+<h2>Sprite Sheet Debug — karakter-transparent.png (900×588, 6col×3row, 150×196/frame)</h2>
+
+<script>
+const container = document.body;
+for (let row = 0; row < 3; row++) {
+  const h = document.createElement('h2');
+  h.textContent = `Row ${row}`;
+  container.appendChild(h);
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  for (let col = 0; col < 6; col++) {
+    const box = document.createElement('div');
+    box.className = 'frame-box';
+    const sprite = document.createElement('div');
+    sprite.className = 'sprite';
+    sprite.style.backgroundPosition = `${-(col*150)}px ${-(row*196)}px`;
+    const label = document.createElement('p');
+    label.textContent = `r${row} c${col}`;
+    box.appendChild(sprite);
+    box.appendChild(label);
+    grid.appendChild(box);
+  }
+  container.appendChild(grid);
+}
+</script>
+</body>
+</html>

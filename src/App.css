@@ -1,38 +1,1409 @@
-.App {
-  text-align: center;
+/* ===== MAIN APP ===== */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: var(--mario-sky);
 }
 
-.App-logo {
-  height: 40vmin;
+/* ===== CLOUDS ===== */
+.clouds-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  z-index: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50px;
+  opacity: 0.9;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-1 { width: 120px; height: 40px; top: 8%; animation: floatCloud 20s linear infinite; }
+.cloud-2 { width: 80px; height: 28px; top: 15%; animation: floatCloud 28s linear infinite 5s; }
+.cloud-3 { width: 150px; height: 50px; top: 6%; animation: floatCloud 35s linear infinite 10s; }
+
+.cloud-1::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+.cloud-1::after  { width: 40px; height: 40px; top: -20px; left: 60px; }
+.cloud-2::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+.cloud-2::after  { width: 30px; height: 30px; top: -15px; left: 40px; }
+.cloud-3::before { width: 70px; height: 70px; top: -40px; left: 20px; }
+.cloud-3::after  { width: 50px; height: 50px; top: -30px; left: 80px; }
+
+@keyframes floatCloud {
+  from { transform: translateX(-200px); }
+  to   { transform: translateX(110vw); }
+}
+
+/* ===== WORLD SCROLLER ===== */
+.world-scroller {
+  display: flex;
+  height: 100vh;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+}
+
+/* ===== SLIDES ===== */
+.slide {
+  min-width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== GROUND ===== */
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background: #5a8a00;
+  border-top: 8px solid #7dc000;
+  z-index: 2;
+}
+
+.ground::after {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #8ec900 0px, #8ec900 32px,
+    #7dc000 32px, #7dc000 64px
+  );
+}
+
+/* ===== PIPES ===== */
+.pipe {
+  position: absolute;
+  bottom: 90px;
+  width: 60px;
+  z-index: 12;
+  transform: translateX(-50%);
+}
+
+.pipe-top {
+  width: 70px;
+  height: 20px;
+  background: var(--mario-pipe);
+  border: 3px solid #1a4a1a;
+  border-radius: 4px 4px 0 0;
+  margin-left: -5px;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+.pipe-body {
+  width: 60px;
+  height: 80px;
+  background: var(--mario-pipe);
+  border: 3px solid #1a4a1a;
+  border-top: none;
+  box-shadow: inset -4px 0 8px rgba(0,0,0,0.3), inset 4px 0 8px rgba(255,255,255,0.1);
+}
+
+/* ===== BLOCKS ===== */
+.block {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 12;
+  box-shadow: inset -4px -4px 0 rgba(0,0,0,0.3), inset 4px 4px 0 rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.block:hover { transform: translateY(-4px); }
+
+.block-question {
+  background: var(--mario-yellow);
+  border: 3px solid #c9a000;
+  animation: blockBounce 1.5s ease-in-out infinite;
+}
+
+.block-brick {
+  background: var(--mario-brick);
+  border: 3px solid #a03800;
+}
+
+.block.hit {
+  background: #8b5a2b !important;
+  border: 3px solid #5c3a1a !important;
+  color: transparent !important;
+  box-shadow: inset -4px -4px 0 rgba(0,0,0,0.4), inset 4px 4px 0 rgba(255,255,255,0.1) !important;
+  animation: none !important;
+  transform: none !important;
+  cursor: default !important;
+}
+
+.block.bounce {
+  animation: blockHitBounce 0.2s ease-out !important;
+}
+
+@keyframes blockHitBounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes blockBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ===== COINS ===== */
+.coin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: var(--mario-coin);
+  border-radius: 50%;
+  border: 3px solid #c8a000;
+  z-index: 12;
+  animation: coinSpin 1s linear infinite;
+  box-shadow: 0 0 8px var(--mario-coin);
+}
+
+.popping-coin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: var(--mario-coin);
+  border-radius: 50%;
+  border: 3px solid #c8a000;
+  z-index: 15;
+  box-shadow: 0 0 8px var(--mario-coin);
+  pointer-events: none;
+  animation: coinPopUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes coinPopUp {
+  0% {
+    transform: translateY(0) scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50px) scaleX(0.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-70px) scaleX(1);
+    opacity: 0;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+@keyframes coinSpin {
+  0% { transform: scaleX(1); }
+  25% { transform: scaleX(0.1); }
+  50% { transform: scaleX(1); }
+  75% { transform: scaleX(0.1); }
+  100% { transform: scaleX(1); }
+}
+
+/* ===== STARS ===== */
+.star-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.5); }
+}
+
+/* ===== MARIO CHARACTER ===== */
+.mario-character {
+  position: fixed;
+  z-index: 100;
+  will-change: transform, bottom;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ===== HUD ===== */
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 200;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.hud-section {
+  font-family: 'Press Start 2P', monospace;
+  color: white;
+  font-size: 10px;
+  text-shadow: 2px 2px 0 #000;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hud-label {
+  color: var(--mario-yellow);
+  font-size: 8px;
+}
+
+.hud-value {
+  color: white;
+  font-size: 11px;
+}
+
+.hud-coins {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-coin-icon {
+  width: 16px;
+  height: 16px;
+  background: var(--mario-coin);
+  border-radius: 50%;
+  border: 2px solid #c8a000;
+  display: inline-block;
+  animation: coinSpin 1s linear infinite;
+}
+
+.hud-lives {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== NAVIGATION DOTS ===== */
+.nav-dots {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 200;
+  pointer-events: all;
+}
+
+.nav-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  border: 2px solid white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-dot.active {
+  background: var(--mario-yellow);
+  border-color: var(--mario-yellow);
+  box-shadow: 0 0 10px var(--mario-yellow);
+  transform: scale(1.3);
+}
+
+/* ===== CONTROLS HINT ===== */
+.controls-hint {
+  position: fixed;
+  bottom: 96px;
+  right: 20px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.key-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.key {
+  width: 30px;
+  height: 30px;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.5);
+}
+
+.key.wide {
+  width: 48px;
+}
+
+.controls-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  color: white;
+  text-shadow: 1px 1px 0 #000;
+  margin-top: 2px;
+}
+
+/* ===== SLIDE CONTENT ===== */
+.slide-content {
+  position: relative;
+  z-index: 10;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding: 60px 40px 120px;
+  pointer-events: all;
+}
+
+/* ===== PIXEL CARD ===== */
+.pixel-card {
+  background: rgba(0,0,0,0.75);
+  border: 4px solid var(--mario-yellow);
+  border-radius: 8px;
+  padding: 30px 40px;
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.5), 0 0 30px rgba(245,197,24,0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mario-red), var(--mario-yellow), var(--mario-green), var(--mario-blue));
+}
+
+/* ===== SLIDE: BERANDA ===== */
+.slide-beranda {
+  background: linear-gradient(180deg, #5c94fc 0%, #5c94fc 70%, #5a8a00 70%);
+}
+
+.beranda-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(18px, 3vw, 32px);
   color: white;
+  text-shadow: 4px 4px 0 var(--mario-red), 8px 8px 0 rgba(0,0,0,0.3);
+  text-align: center;
+  margin-bottom: 10px;
+  animation: titleBounce 1s ease-out;
 }
 
-.App-link {
-  color: #61dafb;
+.beranda-subtitle {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(9px, 1.5vw, 14px);
+  color: var(--mario-yellow);
+  text-shadow: 2px 2px 0 #000;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: titleBounce 1s ease-out 0.2s backwards;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.beranda-desc {
+  font-size: clamp(13px, 1.8vw, 16px);
+  color: #eee;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+@keyframes titleBounce {
+  from { transform: translateY(-40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.btn-primary {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 14px 28px;
+  background: var(--mario-red);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #8b0000;
+  transition: all 0.1s;
+  pointer-events: all;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 0 #8b0000;
+}
+
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 #8b0000;
+}
+
+.start-arrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: white;
+  text-shadow: 1px 1px 0 #000;
+  margin-top: 16px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== SLIDE: TENTANG ===== */
+.slide-tentang {
+  background: linear-gradient(180deg, #1a6ed8 0%, #0d4fa0 60%, #5a8a00 80%);
+}
+
+.section-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: var(--mario-yellow);
+  text-shadow: 3px 3px 0 #000;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.section-flag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.about-avatar {
+  text-align: center;
+}
+
+.avatar-frame {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--mario-yellow);
+  overflow: hidden;
+  margin: 0 auto 12px;
+  box-shadow: 0 0 20px rgba(245,197,24,0.5);
+}
+
+.avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.avatar-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: white;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.avatar-role {
+  font-size: 12px;
+  color: var(--mario-yellow);
+  margin-top: 4px;
+}
+
+.about-text p {
+  font-size: 13px;
+  color: #ddd;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.skill-tag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: white;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+}
+
+.skill-red { background: var(--mario-red); }
+.skill-blue { background: var(--mario-blue); }
+.skill-green { background: var(--mario-green); }
+.skill-yellow { background: #c8960c; }
+.skill-purple { background: #7c3aed; }
+
+/* ===== SLIDE: PORTFOLIO ===== */
+.slide-portfolio {
+  background: linear-gradient(180deg, #2d1b69 0%, #1a0f3c 60%, #5a8a00 80%);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.portfolio-card {
+  background: rgba(255,255,255,0.05);
+  border: 3px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.3s;
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-color, var(--mario-yellow));
+}
+
+.portfolio-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--card-color, var(--mario-yellow));
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  background: rgba(255,255,255,0.1);
+}
+
+.card-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 11px;
+  color: #aaa;
+  line-height: 1.5;
+}
+
+.card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.tech-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  color: #ccc;
+}
+
+/* ===== LIHAT PROJECT BUTTON ===== */
+.btn-lihat-project {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: white;
+  background: var(--card-color, var(--mario-red));
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  transition: all 0.2s;
+  pointer-events: all;
+  letter-spacing: 0.5px;
+}
+
+.btn-lihat-project:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 5px 0 rgba(0,0,0,0.5);
+  filter: brightness(1.2);
+}
+
+.btn-lihat-project:active {
+  transform: translateY(1px);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+
+/* ===== SLIDE: PENDIDIKAN ===== */
+.slide-pendidikan {
+  background: linear-gradient(180deg, #064e3b 0%, #022c22 60%, #5a8a00 80%);
+}
+
+.timeline {
+  position: relative;
+  width: 100%;
+  max-width: 650px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--mario-yellow), var(--mario-green));
+  border-radius: 2px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  background: var(--mario-yellow);
+  border-radius: 50%;
+  border: 3px solid #c8a000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 0 10px rgba(245,197,24,0.5);
+  margin-top: 4px;
+  margin-left: 17px;
+  z-index: 1;
+}
+
+.timeline-content {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 12px 16px;
+  flex: 1;
+}
+
+.timeline-year {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--mario-yellow);
+  margin-bottom: 4px;
+}
+
+.timeline-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 3px;
+}
+
+.timeline-sub {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* ===== SLIDE: PENGALAMAN ===== */
+.slide-pengalaman {
+  background: linear-gradient(180deg, #7c2d12 0%, #431407 60%, #5a8a00 80%);
+}
+
+.exp-list {
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.exp-card {
+  background: rgba(255,255,255,0.06);
+  border-left: 4px solid var(--mario-red);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+  transition: all 0.3s;
+}
+
+.exp-card:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateX(4px);
+}
+
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.exp-company {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--mario-yellow);
+}
+
+.exp-period {
+  font-size: 10px;
+  color: #888;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.exp-position {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.exp-desc {
+  font-size: 12px;
+  color: #bbb;
+  line-height: 1.5;
+}
+
+/* ===== SLIDE: KONTAK ===== */
+.slide-kontak {
+  background: linear-gradient(180deg, #312e81 0%, #1e1b4b 60%, #5a8a00 80%);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 10px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 14px;
+  transition: all 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  pointer-events: all;
+}
+
+.contact-item:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--mario-yellow);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.contact-icon {
+  font-size: 26px;
+  min-width: 36px;
+  text-align: center;
+}
+
+.contact-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--mario-yellow);
+  margin-bottom: 3px;
+}
+
+.contact-value {
+  font-size: 12px;
+  color: #ddd;
+  word-break: break-all;
+}
+
+.contact-form {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+  pointer-events: all;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--mario-yellow);
+}
+
+.contact-form textarea {
+  height: 80px;
+  resize: none;
+}
+
+.contact-form button {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 12px;
+  background: var(--mario-green);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1a5c1a;
+  transition: all 0.15s;
+  pointer-events: all;
+}
+
+.contact-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 5px 0 #1a5c1a;
+}
+
+/* ===== GAME OVER / THANK YOU ===== */
+.thank-you {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--mario-yellow);
+  text-shadow: 2px 2px 0 #000;
+  text-align: center;
+  margin-top: 16px;
+  animation: blink 1.5s step-end infinite;
+}
+
+/* ===== FLAG POLE ===== */
+.flagpole {
+  position: absolute;
+  right: 80px;
+  bottom: 90px;
+  z-index: 5;
+}
+
+.flagpole-pole {
+  width: 6px;
+  height: 280px;
+  background: #aaa;
+  margin: 0 auto;
+  box-shadow: 2px 0 0 #888;
+}
+
+.flagpole-flag {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 36px;
+  height: 26px;
+  background: var(--mario-green);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.flagpole-ball {
+  width: 16px;
+  height: 16px;
+  background: var(--mario-yellow);
+  border-radius: 50%;
+  margin: 0 auto;
+  margin-top: -8px;
+  box-shadow: 0 0 8px var(--mario-yellow);
+}
+
+/* ===== RESPONSIVE ===== */
+.mobile-controls {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .about-grid { grid-template-columns: 1fr; }
+  .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: 1fr; }
+  .pixel-card {
+    padding: 16px;
+    flex-shrink: 0;
   }
-  to {
-    transform: rotate(360deg);
+  .beranda-title { font-size: 16px; }
+  .section-title { font-size: 13px; }
+  .hud-section:last-child { display: none; }
+
+  /* Scrollable slide content — height excludes the 90px ground bar.
+     Controls live INSIDE the ground bar so no extra bottom padding needed. */
+  .slide-content {
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 90px);
+    max-height: calc(100vh - 90px);
+    padding: 70px 14px 30px;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    pointer-events: all;
   }
+
+  /* Allow internal scroll container to overflow the slide boundary */
+  .slide {
+    overflow: visible;
+  }
+
+  /* Hide nav dots on mobile */
+  .nav-dots {
+    display: none;
+  }
+
+  /* ===== MOBILE CONTROLS — live INSIDE the 90px ground bar ===== */
+  /* This ensures they NEVER overlap Mario who stands at bottom: 90px     */
+  .mobile-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 90px;   /* Exactly the ground bar height */
+    padding: 0 24px;
+    z-index: 500;   /* Above everything including ground div */
+    pointer-events: none;
+  }
+
+  .mobile-controls-left,
+  .mobile-controls-right {
+    display: flex;
+    gap: 12px;
+    pointer-events: auto;
+  }
+
+  .mobile-key {
+    width: 62px;
+    height: 62px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.06s, transform 0.06s, box-shadow 0.06s;
+  }
+
+  .mobile-key:active {
+    transform: translateY(3px) scale(0.93);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.6);
+    background: var(--mario-yellow);
+    border-color: white;
+    color: #000;
+  }
+
+  .mobile-key.jump-btn {
+    background: rgba(229, 34, 34, 0.92);
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 0 rgba(120,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  .mobile-key.jump-btn:active {
+    background: var(--mario-yellow);
+    color: #000;
+    border-color: white;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .slide-content {
+    height: calc(100vh - 90px);
+    max-height: calc(100vh - 90px);
+    padding: 70px 10px 30px;
+  }
+}
+
+/* ===== SLIDE TRANSITION ANIMATION ===== */
+.slide-content > * {
+  animation: slideIn 0.6s ease-out both;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ===== SCORE POP ===== */
+.score-pop {
+  position: fixed;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: var(--mario-yellow);
+  text-shadow: 2px 2px 0 #000;
+  pointer-events: none;
+  z-index: 300;
+  animation: scorePop 1s ease-out forwards;
+}
+
+@keyframes scorePop {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mario-red), var(--mario-yellow));
+  z-index: 300;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px var(--mario-yellow);
+}
+
+/* ===== HILLS / LANDSCAPE ===== */
+.hills {
+  position: absolute;
+  bottom: 90px;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hill {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50% 50% 0 0;
+  background: #3a6e00;
+}
+
+.hill::after {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  right: 15%;
+  bottom: 0;
+  border-radius: 50% 50% 0 0;
+  background: #4a8c00;
+}
+
+/* ===== CASTLES ===== */
+.castle {
+  position: absolute;
+  bottom: 90px;
+  right: 20px;
+  width: 80px;
+  height: 100px;
+  z-index: 3;
+}
+
+.castle-body {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  height: 70px;
+  background: #888;
+  border: 3px solid #666;
+}
+
+.castle-tower {
+  position: absolute;
+  bottom: 60px;
+  width: 22px;
+  height: 50px;
+  background: #888;
+  border: 3px solid #666;
+}
+
+.castle-tower.left { left: 0; }
+.castle-tower.right { right: 0; }
+
+.castle-door {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 22px;
+  background: #333;
+  border-radius: 8px 8px 0 0;
+}
+
+.castle-window {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 10px;
+  background: #333;
+  border-radius: 4px 4px 0 0;
+}
+
+/* ===== MUSHROOM ===== */
+.mushroom {
+  position: absolute;
+  bottom: 90px;
+  z-index: 3;
+}
+
+.mushroom-cap {
+  width: 30px;
+  height: 20px;
+  background: var(--mario-red);
+  border-radius: 50% 50% 0 0;
+  position: relative;
+  margin: 0 auto;
+}
+
+.mushroom-cap::before,
+.mushroom-cap::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  top: 4px;
+}
+
+.mushroom-cap::before { left: 4px; }
+.mushroom-cap::after { right: 4px; }
+
+.mushroom-stem {
+  width: 20px;
+  height: 14px;
+  background: #f5d5a0;
+  border-radius: 0 0 4px 4px;
+  margin: 0 auto;
+  border: 2px solid #c8a070;
+  border-top: none;
+}
+
+/* ===== NIGHT SLIDE STARS ===== */
+.night-stars {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 70%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* ===== SPRITE WALK BOBBING ===== */
+@keyframes spriteWalk {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* facing left: flip + bob */
+.mario-character [style*="scaleX(-1)"] {
+  animation: spriteWalkLeft 0.25s ease-in-out infinite;
+}
+
+@keyframes spriteWalkLeft {
+  0%, 100% { transform: scaleX(-1) translateY(0); }
+  50%       { transform: scaleX(-1) translateY(-4px); }
+}
+
+/* ===== MARIO WALK BOB ===== */
+@keyframes marioWalkBob {
+  0%, 100% { transform: translateY(0px);  }
+  25%       { transform: translateY(-5px); }
+  75%       { transform: translateY(-3px); }
+}
+
+/* ===== CONTACT FORM — REVISED ===== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-error {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #ff6b6b;
+  padding-left: 4px;
+}
+
+.contact-form input.input-error,
+.contact-form textarea.input-error {
+  border-color: #ff4444;
+  background: rgba(255, 68, 68, 0.08);
+}
+
+.btn-send {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 13px 20px;
+  background: var(--mario-green);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #1a5c1a;
+  transition: all 0.12s;
+  pointer-events: all;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.btn-send:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 0 #1a5c1a;
+  background: #4cca4c;
+}
+
+.btn-send:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 #1a5c1a;
+}
+
+.btn-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== SUCCESS STATE ===== */
+.contact-success {
+  margin-top: 20px;
+  text-align: center;
+  padding: 24px 20px;
+  background: rgba(60, 176, 67, 0.12);
+  border: 3px solid var(--mario-green);
+  border-radius: 8px;
+  animation: successPop 0.5s cubic-bezier(0.17, 0.67, 0.41, 1.3) both;
+}
+
+@keyframes successPop {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.success-icon {
+  font-size: 48px;
+  animation: iconBounce 0.6s ease-out 0.1s both;
+}
+
+@keyframes iconBounce {
+  0%   { transform: scale(0) rotate(-20deg); }
+  60%  { transform: scale(1.2) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.success-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: var(--mario-green);
+  text-shadow: 3px 3px 0 #000;
+  margin: 12px 0 8px;
+  animation: titleBounce 0.5s ease-out 0.3s both;
+}
+
+.success-msg {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.7;
+}
+
+/* ===== FADE OVERLAY ===== */
+.fade-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  z-index: 1000;
+  /* CRITICAL: must be none when invisible so touch events reach the game */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade-overlay.active {
+  opacity: 1;
+  pointer-events: all;
 }
