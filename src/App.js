@@ -1025,7 +1025,7 @@ export default function App() {
 
     animRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animRef.current);
-  }, [updateMarioDOM, syncSpriteState, addScorePop]);
+  }, [updateMarioDOM, syncSpriteState, addScorePop, GROUND_Y, isMobile]);
 
   // Key listeners — also clear all keys on blur/focus to prevent stuck keys
   useEffect(() => {
