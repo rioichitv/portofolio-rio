@@ -60,7 +60,7 @@ const DECORATIONS_INITIAL = [
 ];
 
 const MARIO_SPEED = 6;
-const JUMP_HEIGHT = 180;
+// const JUMP_HEIGHT = 180;
 const SLIDE_THRESHOLD = 0.96; // 96% of slide width
 
 // ============ CLOUD ============
@@ -695,7 +695,7 @@ export default function App() {
       const mLeft = marioXRef.current;
       const mRight = marioXRef.current + currentMarioSize;
       const mBottom = marioBottomRef.current;
-      const mTop = marioBottomRef.current + currentMarioSize * 1.3;
+      // const mTop = marioBottomRef.current + currentMarioSize * 1.3;
 
       if (isSlidingPoleRef.current) {
         // ── Pole sliding animation ──
@@ -771,7 +771,7 @@ export default function App() {
 
           const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
           const oRight = oLeft + (deco.type === 'pipe' ? 60 : 50);
-          const oBottom = deco.type === 'pipe' ? 90 : deco.y;
+          // const oBottom = deco.type === 'pipe' ? 90 : deco.y;
           const oTop = deco.type === 'pipe' ? 190 : (deco.y + 50);
 
           const horizOverlap = mLeft < oRight - 4 && mRight > oLeft + 4;
