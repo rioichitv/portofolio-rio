@@ -766,7 +766,7 @@ export default function App() {
 
         for (const deco of currentDecos) {
           if (deco.collected) continue;
-          const isSolid = deco.type === 'pipe' || deco.type.startsWith('block');
+          const isSolid = deco.type === 'pipe';
           if (!isSolid) continue;
 
           const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
@@ -818,14 +818,14 @@ export default function App() {
         if (keys['ArrowRight'] || keys['d'] || keys['D']) {
           facingLeftRef.current = false;
           moved = true;
-          const newX = marioXRef.current + MARIO_SPEED;
+          const newX = marioXRef.current + (isMobile ? 5.5 : MARIO_SPEED);
 
           let canMoveRight = true;
           let stopRightX = null;
 
           for (const deco of currentDecos) {
             if (deco.collected) continue;
-            const isSolid = deco.type === 'pipe' || deco.type.startsWith('block');
+            const isSolid = deco.type === 'pipe';
             if (!isSolid) continue;
 
             const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
@@ -876,14 +876,14 @@ export default function App() {
         if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
           facingLeftRef.current = true;
           moved = true;
-          const newX = marioXRef.current - MARIO_SPEED;
+          const newX = marioXRef.current - (isMobile ? 5.5 : MARIO_SPEED);
 
           let canMoveLeft = true;
           let stopLeftX = null;
 
           for (const deco of currentDecos) {
             if (deco.collected) continue;
-            const isSolid = deco.type === 'pipe' || deco.type.startsWith('block');
+            const isSolid = deco.type === 'pipe';
             if (!isSolid) continue;
 
             const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
