@@ -607,7 +607,7 @@ export default function App() {
 
   // Use refs for all fast-changing values to avoid re-renders
   const marioXRef = useRef(80);
-  const marioBottomRef = useRef(90);
+  const marioBottomRef = useRef(typeof window !== 'undefined' && window.innerWidth < 768 ? 60 : 90);
   const isJumpingRef = useRef(false);
   const facingLeftRef = useRef(false);
   const isWalkingRef = useRef(false);
@@ -618,7 +618,7 @@ export default function App() {
   const marioVYRef = useRef(0);
   const isSlidingPoleRef = useRef(false);
   const poleSlideStartTimeRef = useRef(0);
-  const poleSlideStartHeightRef = useRef(90);
+  const poleSlideStartHeightRef = useRef(typeof window !== 'undefined' && window.innerWidth < 768 ? 60 : 90);
 
   // Sprite state: only update React state when the animation state actually changes
   const [spriteState, setSpriteState] = useState('idle'); // idle | walk | jump
@@ -629,6 +629,9 @@ export default function App() {
   // slideWidth state and listener for responsive mobile synchronization
   const [slideWidth, setSlideWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const slideWidthRef = useRef(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  const isMobile = slideWidth < 768;
+  const GROUND_Y = isMobile ? 60 : 90;
 
   useEffect(() => {
     const handleResize = () => {
@@ -662,6 +665,14 @@ export default function App() {
     el.style.transform = `translate3d(${marioXRef.current}px, 0, 0)`;
     el.style.bottom = marioBottomRef.current + 'px';
   }, []);
+
+  // Sync Mario's ground position on resize/mode change
+  useEffect(() => {
+    if (!isJumpingRef.current && !isSlidingPoleRef.current) {
+      marioBottomRef.current = GROUND_Y;
+      updateMarioDOM();
+    }
+  }, [GROUND_Y, updateMarioDOM]);
 
   // Update sprite React state only when it actually changes (idle/walk/jump, facing)
   const syncSpriteState = useCallback(() => {
@@ -699,7 +710,7 @@ export default function App() {
         const duration = 1200; // 1.2s slide down
         const progress = Math.min(elapsed / duration, 1);
 
-        marioBottomRef.current = poleSlideStartHeightRef.current - progress * (poleSlideStartHeightRef.current - 90);
+        marioBottomRef.current = poleSlideStartHeightRef.current - progress * (poleSlideStartHeightRef.current - GROUND_Y);
         
         isJumpingRef.current = true;
         facingLeftRef.current = false;
@@ -713,7 +724,7 @@ export default function App() {
           setTimeout(() => {
             setCurrentSlide(0);
             marioXRef.current = 80;
-            marioBottomRef.current = 90;
+            marioBottomRef.current = GROUND_Y;
             isJumpingRef.current = false;
             marioVYRef.current = 0;
             setFlagY(0);
@@ -757,7 +768,8 @@ export default function App() {
 
         // 1. Vertical physics & landing check
         let isGrounded = false;
-        let groundY = 90;
+        let groundY = GROUND_Y;
+        const scale = isMobile ? 0.7 : 1.0;
 
         for (const deco of currentDecos) {
           if (deco.collected) continue;
@@ -765,9 +777,9 @@ export default function App() {
           if (!isSolid) continue;
 
           const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
-          const oRight = oLeft + (deco.type === 'pipe' ? 60 : 50);
-          // const oBottom = deco.type === 'pipe' ? 90 : deco.y;
-          const oTop = deco.type === 'pipe' ? 190 : (deco.y + 50);
+          const oRight = oLeft + (deco.type === 'pipe' ? Math.round(60 * scale) : Math.round(50 * scale));
+          const oBottom = deco.type === 'pipe' ? GROUND_Y : Math.round(deco.y * scale);
+          const oTop = deco.type === 'pipe' ? GROUND_Y + Math.round(100 * scale) : oBottom + Math.round(50 * scale);
 
           const horizOverlap = mLeft < oRight - 4 && mRight > oLeft + 4;
 
@@ -781,9 +793,9 @@ export default function App() {
           }
         }
 
-        if (!isGrounded && mBottom <= 90 && marioVYRef.current <= 0) {
+        if (!isGrounded && mBottom <= GROUND_Y && marioVYRef.current <= 0) {
           isGrounded = true;
-          groundY = 90;
+          groundY = GROUND_Y;
         }
 
         if (isGrounded) {
@@ -802,8 +814,8 @@ export default function App() {
           marioVYRef.current -= 0.6;
           marioBottomRef.current += marioVYRef.current;
 
-          if (marioBottomRef.current < 90) {
-            marioBottomRef.current = 90;
+          if (marioBottomRef.current < GROUND_Y) {
+            marioBottomRef.current = GROUND_Y;
             marioVYRef.current = 0;
             isJumpingRef.current = false;
           }
@@ -824,9 +836,9 @@ export default function App() {
             if (!isSolid) continue;
 
             const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
-            const oRight = oLeft + (deco.type === 'pipe' ? 60 : 50);
-            const oBottom = deco.type === 'pipe' ? 90 : deco.y;
-            const oTop = deco.type === 'pipe' ? 190 : (deco.y + 50);
+            const oRight = oLeft + (deco.type === 'pipe' ? Math.round(60 * scale) : Math.round(50 * scale));
+            const oBottom = deco.type === 'pipe' ? GROUND_Y : Math.round(deco.y * scale);
+            const oTop = deco.type === 'pipe' ? GROUND_Y + Math.round(100 * scale) : oBottom + Math.round(50 * scale);
 
             const proposedLeft = newX;
             const proposedRight = newX + currentMarioSize;
@@ -882,9 +894,9 @@ export default function App() {
             if (!isSolid) continue;
 
             const oLeft = (parseFloat(deco.x) / 100) * slideWidth;
-            const oRight = oLeft + (deco.type === 'pipe' ? 60 : 50);
-            const oBottom = deco.type === 'pipe' ? 90 : deco.y;
-            const oTop = deco.type === 'pipe' ? 190 : (deco.y + 50);
+            const oRight = oLeft + (deco.type === 'pipe' ? Math.round(60 * scale) : Math.round(50 * scale));
+            const oBottom = deco.type === 'pipe' ? GROUND_Y : Math.round(deco.y * scale);
+            const oTop = deco.type === 'pipe' ? GROUND_Y + Math.round(100 * scale) : oBottom + Math.round(50 * scale);
 
             const proposedLeft = newX;
             const proposedRight = newX + currentMarioSize;
@@ -935,9 +947,9 @@ export default function App() {
             // Coin collection
             if (deco.type === 'coin' && !deco.collected) {
               const cLeft = (parseFloat(deco.x) / 100) * slideWidth;
-              const cRight = cLeft + 24;
-              const cBottom = deco.y;
-              const cTop = deco.y + 24;
+              const cRight = cLeft + Math.round(24 * scale);
+              const cBottom = Math.round(deco.y * scale);
+              const cTop = cBottom + Math.round(24 * scale);
 
               if (mLeftNew < cRight && mRightNew > cLeft && mBottomNew < cTop && mTopNew > cBottom) {
                 playCoinSound();
@@ -952,10 +964,10 @@ export default function App() {
             // Block headbutt
             if (deco.type.startsWith('block') && !deco.hit) {
               const bLeft = (parseFloat(deco.x) / 100) * slideWidth;
-              const bRight = bLeft + 50;
-              const bBottom = deco.y;
+              const bRight = bLeft + Math.round(50 * scale);
+              const bBottom = Math.round(deco.y * scale);
 
-              const horizOverlap = mLeftNew < bRight - 8 && mRightNew > bLeft + 8;
+              const horizOverlap = mLeftNew < bRight - Math.round(8 * scale) && mRightNew > bLeft + Math.round(8 * scale);
               const verticalHit = mTopNew >= bBottom && mBottomNew < bBottom;
 
               if (horizOverlap && verticalHit && marioVYRef.current > 0) {
@@ -993,7 +1005,8 @@ export default function App() {
 
         // 4. Check Flagpole slide trigger on slide 5
         if (currentSlide === 5) {
-          const poleX = slideWidth - 88;
+          const isMobileNow = slideWidth < 768;
+          const poleX = slideWidth - (isMobileNow ? 50 : 88);
           if (mLeftNew + currentMarioSize / 2 >= poleX) {
             isSlidingPoleRef.current = true;
             poleSlideStartTimeRef.current = performance.now();
@@ -1014,7 +1027,7 @@ export default function App() {
     return () => cancelAnimationFrame(animRef.current);
   }, [updateMarioDOM, syncSpriteState, addScorePop]);
 
-  // Key listeners
+  // Key listeners — also clear all keys on blur/focus to prevent stuck keys
   useEffect(() => {
     const down = (e) => {
       if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
@@ -1023,11 +1036,19 @@ export default function App() {
       keysRef.current[e.key] = true;
     };
     const up = (e) => { keysRef.current[e.key] = false; };
+    const clearKeys = () => { keysRef.current = {}; };
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
+    window.addEventListener('blur', clearKeys);
+    window.addEventListener('visibilitychange', () => {
+      if (document.hidden) clearKeys();
+    });
+    // Clear keys immediately on mount to prevent stale state
+    clearKeys();
     return () => {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
+      window.removeEventListener('blur', clearKeys);
     };
   }, []);
 
@@ -1042,7 +1063,6 @@ export default function App() {
     keysRef.current[key] = false;
   }, []);
 
-  const isMobile = slideWidth < 768;
   const marioSize = isMobile ? 54 : 76;
   const progressPct = ((currentSlide) / (SLIDES.length - 1)) * 100;
 
@@ -1087,7 +1107,7 @@ export default function App() {
       <div
         ref={marioElRef}
         className="mario-character"
-        style={{ left: 0, bottom: 90, transform: `translate3d(80px, 0, 0)` }}
+        style={{ left: 0, bottom: GROUND_Y, transform: `translate3d(80px, 0, 0)` }}
       >
         <MarioSprite
           state={spriteState}

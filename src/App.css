@@ -1026,11 +1026,11 @@
     justify-content: flex-start;
     overflow-y: auto;
     overflow-x: hidden;
-    height: calc(100vh - 90px);
-    height: calc(100dvh - 90px);
-    max-height: calc(100vh - 90px);
-    max-height: calc(100dvh - 90px);
-    padding: 60px 14px 220px;
+    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
+    max-height: calc(100vh - 60px);
+    max-height: calc(100dvh - 60px);
+    padding: 60px 14px 180px;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     pointer-events: all;
@@ -1046,8 +1046,7 @@
     display: none;
   }
 
-  /* ===== MOBILE CONTROLS — live INSIDE the 90px ground bar ===== */
-  /* This ensures they NEVER overlap Mario who stands at bottom: 90px     */
+  /* ===== MOBILE CONTROLS — larger buttons for better gameplay ===== */
   .mobile-controls {
     display: flex;
     justify-content: space-between;
@@ -1056,8 +1055,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 90px;   /* Exactly the ground bar height */
-    padding: 0 24px;
+    height: 70px;   /* Slightly taller for bigger buttons */
+    padding: 0 12px;
     z-index: 500;   /* Above everything including ground div */
     pointer-events: none;
   }
@@ -1065,19 +1064,19 @@
   .mobile-controls-left,
   .mobile-controls-right {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     pointer-events: auto;
   }
 
   .mobile-key {
-    width: 62px;
-    height: 62px;
+    width: 56px;
+    height: 56px;
     background: rgba(0, 0, 0, 0.85);
     border: 3px solid rgba(255, 255, 255, 0.75);
     border-radius: 50%;
     color: white;
     font-family: 'Press Start 2P', monospace;
-    font-size: 22px;
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1100,6 +1099,8 @@
   }
 
   .mobile-key.jump-btn {
+    width: 62px;
+    height: 62px;
     background: rgba(229, 34, 34, 0.92);
     border-color: rgba(255, 255, 255, 0.85);
     box-shadow: 0 4px 0 rgba(120,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
@@ -1110,16 +1111,66 @@
     color: #000;
     border-color: white;
   }
+
+  /* ===== MOBILE GAME — scaled decorations, expanded play area ===== */
+  .ground {
+    height: 60px;
+  }
+  .ground::after {
+    top: -12px;
+    height: 6px;
+  }
+
+  .pipe {
+    bottom: 60px;
+    transform: translateX(-50%) scale(0.7);
+    transform-origin: bottom center;
+  }
+
+  .block {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+    bottom: auto;
+    transform-origin: bottom left;
+  }
+
+  .coin {
+    width: 17px;
+    height: 17px;
+    transform-origin: bottom left;
+  }
+
+  /* Flagpole — visible on mobile, properly sized and positioned */
+  .flagpole {
+    bottom: 60px;
+    right: 14px;
+    transform: scale(0.8);
+    transform-origin: bottom right;
+  }
+
+  .flagpole-pole {
+    height: 220px;
+  }
+
+  .mario-character {
+    position: fixed;
+  }
+
+  /* Hills should sit on top of the mobile ground bar */
+  .hills {
+    bottom: 60px;
+  }
 }
 
 @media (max-width: 480px) {
   .portfolio-grid { grid-template-columns: 1fr; }
   .slide-content {
-    height: calc(100vh - 90px);
-    height: calc(100dvh - 90px);
-    max-height: calc(100vh - 90px);
-    max-height: calc(100dvh - 90px);
-    padding: 60px 10px 220px;
+    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
+    max-height: calc(100vh - 60px);
+    max-height: calc(100dvh - 60px);
+    padding: 60px 10px 180px;
   }
 }
 
