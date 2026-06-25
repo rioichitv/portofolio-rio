@@ -741,7 +741,7 @@ export default function App() {
             setTimeout(() => {
               setFadeActive(false);
             }, 300);
-          }, 800);
+          }, 3500);
         }
       } else if (transitioningRef.current) {
         // ── Slide transition ──
@@ -1130,8 +1130,17 @@ export default function App() {
         <ControlsHint />
       )}
 
-      {/* Fade out transition overlay */}
-      <div className={`fade-overlay ${fadeActive ? 'active' : ''}`} />
+      {/* Fade out transition overlay with FINISH message */}
+      <div className={`fade-overlay ${fadeActive ? 'active' : ''}`}>
+        {fadeActive && (
+          <div className="finish-screen">
+            <div className="finish-star">⭐</div>
+            <div className="finish-title">GAME CLEAR!</div>
+            <div className="finish-subtitle">COURSE COMPLETE</div>
+            <div className="finish-score">SCORE: {String(score).padStart(6, '0')}</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
