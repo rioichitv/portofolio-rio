@@ -17,37 +17,31 @@ const DECORATIONS_INITIAL = [
   // Slide 0 (Beranda)
   [
     { id: 's0-d0', type: 'block-question', x: '12.5%', y: 215 },
-    { id: 's0-d2', type: 'coin', x: '12.5%', y: 275 },
     { id: 's0-d3', type: 'pipe', x: '50%' },
   ],
   // Slide 1 (Tentang)
   [
     { id: 's1-d0', type: 'pipe', x: '50%' },
     { id: 's1-d3', type: 'block-question', x: '12%', y: 230 },
-    { id: 's1-d5', type: 'coin', x: '12%', y: 290 },
   ],
   // Slide 2 (Portfolio)
   [
     { id: 's2-d0', type: 'block-question', x: '8%', y: 215 },
-    { id: 's2-d1', type: 'coin', x: '8%', y: 275 },
     { id: 's2-d3', type: 'pipe', x: '50%' },
   ],
   // Slide 3 (Pendidikan)
   [
     { id: 's3-d0', type: 'pipe', x: '50%' },
     { id: 's3-d2', type: 'block-question', x: '12%', y: 220 },
-    { id: 's3-d3', type: 'coin', x: '12%', y: 280 },
   ],
   // Slide 4 (Pengalaman)
   [
     { id: 's4-d0', type: 'block-question', x: '12%', y: 215 },
-    { id: 's4-d2', type: 'coin', x: '12%', y: 275 },
     { id: 's4-d3', type: 'pipe', x: '50%' },
   ],
   // Slide 5 (Kontak)
   [
     { id: 's5-d0', type: 'block-question', x: '10%', y: 225 },
-    { id: 's5-d1', type: 'coin', x: '10%', y: 285 },
     { id: 's5-d2', type: 'flagpole' },
   ],
 ];
@@ -662,8 +656,7 @@ export default function App() {
   const updateMarioDOM = useCallback(() => {
     const el = marioElRef.current;
     if (!el) return;
-    el.style.transform = `translate3d(${marioXRef.current}px, 0, 0)`;
-    el.style.bottom = marioBottomRef.current + 'px';
+    el.style.transform = `translate3d(${marioXRef.current}px, ${-marioBottomRef.current}px, 0)`;
   }, []);
 
   // Sync Mario's ground position on resize/mode change
@@ -1107,7 +1100,7 @@ export default function App() {
       <div
         ref={marioElRef}
         className="mario-character"
-        style={{ left: 0, bottom: GROUND_Y, transform: `translate3d(80px, 0, 0)` }}
+        style={{ left: 0, bottom: 0, transform: `translate3d(80px, -${GROUND_Y}px, 0)` }}
       >
         <MarioSprite
           state={spriteState}
@@ -1135,7 +1128,7 @@ export default function App() {
         {fadeActive && (
           <div className="finish-screen">
             <div className="finish-star">⭐</div>
-            <div className="finish-title">GAME CLEAR!</div>
+            <div className="finish-title">FINISH!</div>
             <div className="finish-subtitle">COURSE COMPLETE</div>
             <div className="finish-score">SCORE: {String(score).padStart(6, '0')}</div>
           </div>

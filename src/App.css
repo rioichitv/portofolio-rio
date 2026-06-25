@@ -252,7 +252,7 @@
 .mario-character {
   position: absolute;
   z-index: 100;
-  will-change: transform, bottom;
+  will-change: transform;
   user-select: none;
   pointer-events: none;
 }
