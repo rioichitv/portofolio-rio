@@ -59,7 +59,7 @@ const DECORATIONS_INITIAL = [
   ],
 ];
 
-const MARIO_SPEED = 6;
+const MARIO_SPEED = 9;
 // const JUMP_HEIGHT = 180;
 const SLIDE_THRESHOLD = 0.96; // 96% of slide width
 
