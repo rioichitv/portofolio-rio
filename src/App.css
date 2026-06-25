@@ -2,6 +2,7 @@
 .app-container {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   position: relative;
   background: var(--mario-sky);
@@ -53,6 +54,7 @@
 .world-scroller {
   display: flex;
   height: 100vh;
+  height: 100dvh;
   transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
   will-change: transform;
 }
@@ -61,6 +63,7 @@
 .slide {
   min-width: 100vw;
   height: 100vh;
+  height: 100dvh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -247,7 +250,7 @@
 
 /* ===== MARIO CHARACTER ===== */
 .mario-character {
-  position: fixed;
+  position: absolute;
   z-index: 100;
   will-change: transform, bottom;
   user-select: none;
@@ -988,12 +991,30 @@
 }
 
 @media (max-width: 768px) {
-  .about-grid { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; gap: 10px; }
   .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
   .contact-grid { grid-template-columns: 1fr; }
   .pixel-card {
     padding: 16px;
     flex-shrink: 0;
+  }
+  .about-avatar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .avatar-frame {
+    width: 64px;
+    height: 64px;
+    margin: 0;
+  }
+  .avatar-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   .beranda-title { font-size: 16px; }
   .section-title { font-size: 13px; }
@@ -1006,8 +1027,10 @@
     overflow-y: auto;
     overflow-x: hidden;
     height: calc(100vh - 90px);
+    height: calc(100dvh - 90px);
     max-height: calc(100vh - 90px);
-    padding: 70px 14px 30px;
+    max-height: calc(100dvh - 90px);
+    padding: 60px 14px 220px;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     pointer-events: all;
@@ -1093,8 +1116,10 @@
   .portfolio-grid { grid-template-columns: 1fr; }
   .slide-content {
     height: calc(100vh - 90px);
+    height: calc(100dvh - 90px);
     max-height: calc(100vh - 90px);
-    padding: 70px 10px 30px;
+    max-height: calc(100dvh - 90px);
+    padding: 60px 10px 220px;
   }
 }
 

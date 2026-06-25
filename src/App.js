@@ -16,44 +16,37 @@ const SLIDES = [
 const DECORATIONS_INITIAL = [
   // Slide 0 (Beranda)
   [
-    { id: 's0-d0', type: 'block-question', x: '10%', y: 215 },
-    { id: 's0-d1', type: 'block-question', x: '15%', y: 215 },
+    { id: 's0-d0', type: 'block-question', x: '12.5%', y: 215 },
     { id: 's0-d2', type: 'coin', x: '12.5%', y: 275 },
     { id: 's0-d3', type: 'pipe', x: '50%' },
   ],
   // Slide 1 (Tentang)
   [
     { id: 's1-d0', type: 'pipe', x: '50%' },
-    { id: 's1-d1', type: 'block-brick', x: '10%', y: 230 },
-    { id: 's1-d2', type: 'block-brick', x: '14%', y: 230 },
-    { id: 's1-d3', type: 'block-question', x: '18%', y: 230 },
-    { id: 's1-d4', type: 'block-brick', x: '22%', y: 230 },
-    { id: 's1-d5', type: 'coin', x: '18%', y: 290 },
+    { id: 's1-d3', type: 'block-question', x: '12%', y: 230 },
+    { id: 's1-d5', type: 'coin', x: '12%', y: 290 },
   ],
   // Slide 2 (Portfolio)
   [
     { id: 's2-d0', type: 'block-question', x: '8%', y: 215 },
-    { id: 's2-d1', type: 'coin', x: '6%', y: 275 },
-    { id: 's2-d2', type: 'coin', x: '10%', y: 275 },
+    { id: 's2-d1', type: 'coin', x: '8%', y: 275 },
     { id: 's2-d3', type: 'pipe', x: '50%' },
   ],
   // Slide 3 (Pendidikan)
   [
     { id: 's3-d0', type: 'pipe', x: '50%' },
-    { id: 's3-d1', type: 'block-brick', x: '10%', y: 220 },
-    { id: 's3-d2', type: 'block-question', x: '15%', y: 220 },
-    { id: 's3-d3', type: 'coin', x: '12.5%', y: 280 },
+    { id: 's3-d2', type: 'block-question', x: '12%', y: 220 },
+    { id: 's3-d3', type: 'coin', x: '12%', y: 280 },
   ],
   // Slide 4 (Pengalaman)
   [
-    { id: 's4-d0', type: 'block-question', x: '10%', y: 215 },
-    { id: 's4-d1', type: 'block-question', x: '15%', y: 215 },
-    { id: 's4-d2', type: 'coin', x: '12.5%', y: 275 },
+    { id: 's4-d0', type: 'block-question', x: '12%', y: 215 },
+    { id: 's4-d2', type: 'coin', x: '12%', y: 275 },
     { id: 's4-d3', type: 'pipe', x: '50%' },
   ],
   // Slide 5 (Kontak)
   [
-    { id: 's5-d0', type: 'block-brick', x: '10%', y: 225 },
+    { id: 's5-d0', type: 'block-question', x: '10%', y: 225 },
     { id: 's5-d1', type: 'coin', x: '10%', y: 285 },
     { id: 's5-d2', type: 'flagpole' },
   ],
@@ -198,8 +191,10 @@ function SlideTentangContent() {
             <div className="avatar-frame">
               <img src="/mario.png" alt="Rio" />
             </div>
-            <div className="avatar-name">RIO</div>
-            <div className="avatar-role">Full Stack Dev</div>
+            <div className="avatar-info">
+              <div className="avatar-name">RIO</div>
+              <div className="avatar-role">Full Stack Dev</div>
+            </div>
           </div>
           <div className="about-text">
             <p>
